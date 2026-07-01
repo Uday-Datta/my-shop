@@ -33,6 +33,14 @@ export default function Navbar() {
               <Link href="/orders" className="text-sm">
                 My Orders
               </Link>
+              {session.user.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="text-sm font-semibold text-purple-600"
+                >
+                  Admin
+                </Link>
+              )}
               <button onClick={() => signOut()} className="text-sm underline">
                 Log out
               </button>
