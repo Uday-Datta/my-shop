@@ -30,6 +30,9 @@ export default function Navbar() {
               <span className="text-sm text-gray-600">
                 Hi, {session.user.name || session.user.email}
               </span>
+              <Link href="/orders" className="text-sm">
+                My Orders
+              </Link>
               <button onClick={() => signOut()} className="text-sm underline">
                 Log out
               </button>
