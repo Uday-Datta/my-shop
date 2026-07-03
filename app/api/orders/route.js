@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(req) {
+// GET — fetch orders for the logged in customer
+export async function GET() {
   const session = await auth();
-  console.log("SESSION:", JSON.stringify(session));
 
   if (!session) {
     return NextResponse.json(
@@ -28,6 +28,7 @@ export async function GET(req) {
   return NextResponse.json(orders);
 }
 
+// POST — place a new order (cash on delivery)
 export async function POST(req) {
   const session = await auth();
 
@@ -38,7 +39,8 @@ export async function POST(req) {
     );
   }
 
-  const { items, total } = await req.json();
+  const body = await req.json();
+  const { items, total } = body;
 
   if (!items || items.length === 0) {
     return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
@@ -69,9 +71,9 @@ export async function POST(req) {
 
     return NextResponse.json({ orderId: order.id }, { status: 201 });
   } catch (error) {
-    console.error(error);
+    console.error("ORDER ERROR:", error);
     return NextResponse.json(
-      { error: "Failed to place order" },
+      { error: error.message || "Failed to place order" },
       { status: 500 }
     );
   }

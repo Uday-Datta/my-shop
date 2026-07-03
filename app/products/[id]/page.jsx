@@ -20,6 +20,8 @@ export default async function ProductDetailPage({ params }) {
             src={product.image || "https://placehold.co/400x300?text=No+Image"}
             alt={product.name}
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="eager"
             className="object-cover"
           />
         </div>

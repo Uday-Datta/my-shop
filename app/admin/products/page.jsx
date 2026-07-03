@@ -80,15 +80,21 @@ export default function AdminProductsPage() {
 
   return (
     <div>
+      {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Products</h1>
+        <div>
+          <h1 className="text-gray-900 dark:text-white">Products</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            {products.length} product{products.length !== 1 ? "s" : ""} total
+          </p>
+        </div>
         <button
           onClick={() => {
             setShowForm(!showForm);
             setForm(EMPTY_FORM);
             setEditingId(null);
           }}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 text-sm"
+          className="btn-primary"
         >
           {showForm ? "Cancel" : "+ Add Product"}
         </button>
@@ -96,107 +102,148 @@ export default function AdminProductsPage() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white border rounded-lg p-6 mb-8 grid grid-cols-2 gap-4"
-        >
-          <h2 className="col-span-2 font-semibold">
+        <div className="card p-6 mb-8">
+          <h3 className="text-gray-900 dark:text-white mb-6">
             {editingId ? "Edit Product" : "New Product"}
-          </h2>
+          </h3>
+          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+            {[
+              { label: "Name", key: "name", type: "text" },
+              { label: "Category", key: "category", type: "text" },
+              { label: "Price ($)", key: "price", type: "number" },
+              { label: "Stock", key: "stock", type: "number" },
+              { label: "Image URL", key: "image", type: "text" },
+            ].map(({ label, key, type }) => (
+              <div key={key}>
+                <label className="label block mb-1.5">{label}</label>
+                <input
+                  type={type}
+                  required={key !== "image"}
+                  className="w-full"
+                  value={form[key]}
+                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                />
+              </div>
+            ))}
 
-          {[
-            { label: "Name", key: "name", type: "text" },
-            { label: "Category", key: "category", type: "text" },
-            { label: "Price", key: "price", type: "number" },
-            { label: "Stock", key: "stock", type: "number" },
-            { label: "Image URL", key: "image", type: "text" },
-          ].map(({ label, key, type }) => (
-            <div key={key}>
-              <label className="text-sm text-gray-600 block mb-1">
-                {label}
-              </label>
-              <input
-                type={type}
-                required={key !== "image"}
-                className="w-full border rounded px-3 py-2 text-sm"
-                value={form[key]}
-                onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+            <div className="col-span-2">
+              <label className="label block mb-1.5">Description</label>
+              <textarea
+                required
+                rows={3}
+                className="w-full"
+                value={form.description}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
               />
             </div>
-          ))}
 
-          <div className="col-span-2">
-            <label className="text-sm text-gray-600 block mb-1">
-              Description
-            </label>
-            <textarea
-              required
-              rows={3}
-              className="w-full border rounded px-3 py-2 text-sm"
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="col-span-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 text-sm"
-            >
-              {loading
-                ? "Saving..."
-                : editingId
-                ? "Update Product"
-                : "Create Product"}
-            </button>
-          </div>
-        </form>
+            <div className="col-span-2 flex gap-3">
+              <button type="submit" disabled={loading} className="btn-primary">
+                {loading
+                  ? "Saving..."
+                  : editingId
+                  ? "Update Product"
+                  : "Create Product"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForm(false);
+                  setForm(EMPTY_FORM);
+                  setEditingId(null);
+                }}
+                className="btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Products table */}
-      <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-500">
-            <tr>
-              <th className="text-left px-6 py-3">Name</th>
-              <th className="text-left px-6 py-3">Category</th>
-              <th className="text-left px-6 py-3">Price</th>
-              <th className="text-left px-6 py-3">Stock</th>
-              <th className="text-left px-6 py-3">Actions</th>
+      <div className="card overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+              <th className="text-left px-6 py-4">Name</th>
+              <th className="text-left px-6 py-4">Category</th>
+              <th className="text-left px-6 py-4">Price</th>
+              <th className="text-left px-6 py-4">Stock</th>
+              <th className="text-left px-6 py-4">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
             {products.map((product) => (
-              <tr key={product.id}>
-                <td className="px-6 py-4 font-medium">{product.name}</td>
-                <td className="px-6 py-4 text-gray-500">{product.category}</td>
-                <td className="px-6 py-4">${product.price.toFixed(2)}</td>
+              <tr
+                key={product.id}
+                className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+              >
                 <td className="px-6 py-4">
-                  <span className={product.stock === 0 ? "text-red-500" : ""}>
-                    {product.stock}
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {product.name}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 line-clamp-1">
+                    {product.description}
+                  </p>
+                </td>
+                <td className="px-6 py-4">
+                  <span className="badge bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                    {product.category}
                   </span>
                 </td>
-                <td className="px-6 py-4 flex gap-3">
-                  <button
-                    onClick={() => handleEdit(product)}
-                    className="text-blue-600 hover:underline"
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                  ${product.price.toFixed(2)}
+                </td>
+                <td className="px-6 py-4">
+                  <span
+                    className={
+                      product.stock === 0
+                        ? "text-red-500 dark:text-red-400 font-medium text-sm"
+                        : "text-green-600 dark:text-green-400 font-medium text-sm"
+                    }
                   >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Delete
-                  </button>
+                    {product.stock === 0
+                      ? "Out of stock"
+                      : `${product.stock} left`}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => handleEdit(product)}
+                      className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="btn-danger"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {products.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-400 dark:text-gray-500 text-sm">
+              No products yet.
+            </p>
+            <button
+              onClick={() => setShowForm(true)}
+              className="btn-primary mt-4"
+            >
+              Add your first product
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

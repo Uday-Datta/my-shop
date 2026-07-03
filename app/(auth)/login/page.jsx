@@ -34,43 +34,74 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-8 border rounded-lg shadow-sm">
-      <h1 className="text-2xl font-bold mb-6">Welcome back</h1>
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="card w-full max-w-md p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-gray-900 dark:text-white">Welcome back</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
+            Sign in to your account to continue shopping
+          </p>
+        </div>
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          required
-          className="w-full border rounded px-3 py-2"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          required
-          className="w-full border rounded px-3 py-2"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black text-white rounded py-2 hover:bg-gray-800"
-        >
-          {loading ? "Logging in..." : "Log In"}
-        </button>
-      </form>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="label block mb-1.5">Email</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              required
+              className="w-full"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          </div>
 
-      <p className="mt-4 text-sm">
-        Don&apos;t have an account?{" "}
-        <Link href="/register" className="underline">
-          Sign up
-        </Link>
-      </p>
+          <div>
+            <label className="label block mb-1.5">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              required
+              className="w-full"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary w-full py-2.5 mt-2 flex items-center justify-center gap-2"
+          >
+            {loading && (
+              <div className="w-4 h-4 border-2 border-white dark:border-gray-900 border-t-transparent rounded-full animate-spin" />
+            )}
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/register"
+              className="font-medium text-gray-900 dark:text-white underline underline-offset-2"
+            >
+              Sign up for free
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
