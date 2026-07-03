@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 const EMPTY_FORM = {
   name: "",
@@ -106,58 +107,113 @@ export default function AdminProductsPage() {
           <h3 className="text-gray-900 dark:text-white mb-6">
             {editingId ? "Edit Product" : "New Product"}
           </h3>
-          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-            {[
-              { label: "Name", key: "name", type: "text" },
-              { label: "Category", key: "category", type: "text" },
-              { label: "Price ($)", key: "price", type: "number" },
-              { label: "Stock", key: "stock", type: "number" },
-              { label: "Image URL", key: "image", type: "text" },
-            ].map(({ label, key, type }) => (
-              <div key={key}>
-                <label className="label block mb-1.5">{label}</label>
+
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Name */}
+              <div>
+                <label className="label block mb-1.5">Name</label>
                 <input
-                  type={type}
-                  required={key !== "image"}
+                  type="text"
+                  required
                   className="w-full"
-                  value={form[key]}
-                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
               </div>
-            ))}
 
-            <div className="col-span-2">
-              <label className="label block mb-1.5">Description</label>
-              <textarea
-                required
-                rows={3}
-                className="w-full"
-                value={form.description}
-                onChange={(e) =>
-                  setForm({ ...form, description: e.target.value })
-                }
-              />
-            </div>
+              {/* Category */}
+              <div>
+                <label className="label block mb-1.5">Category</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full"
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm({ ...form, category: e.target.value })
+                  }
+                />
+              </div>
 
-            <div className="col-span-2 flex gap-3">
-              <button type="submit" disabled={loading} className="btn-primary">
-                {loading
-                  ? "Saving..."
-                  : editingId
-                  ? "Update Product"
-                  : "Create Product"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowForm(false);
-                  setForm(EMPTY_FORM);
-                  setEditingId(null);
-                }}
-                className="btn-secondary"
-              >
-                Cancel
-              </button>
+              {/* Price */}
+              <div>
+                <label className="label block mb-1.5">Price ($)</label>
+                <input
+                  type="number"
+                  required
+                  step="0.01"
+                  min="0"
+                  className="w-full"
+                  value={form.price}
+                  onChange={(e) => setForm({ ...form, price: e.target.value })}
+                />
+              </div>
+
+              {/* Stock */}
+              <div>
+                <label className="label block mb-1.5">Stock</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  className="w-full"
+                  value={form.stock}
+                  onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                />
+              </div>
+
+              {/* Description — full width */}
+              <div className="col-span-2">
+                <label className="label block mb-1.5">Description</label>
+                <textarea
+                  required
+                  rows={3}
+                  className="w-full"
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Image upload — full width */}
+              <div className="col-span-2">
+                <label className="label block mb-1.5">Product Image</label>
+                <ImageUpload
+                  value={form.image}
+                  onChange={(url) => setForm({ ...form, image: url })}
+                />
+              </div>
+
+              {/* Action buttons — full width */}
+              <div className="col-span-2 flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary flex items-center gap-2"
+                >
+                  {loading && (
+                    <div className="w-4 h-4 border-2 border-white dark:border-gray-900 border-t-transparent rounded-full animate-spin" />
+                  )}
+                  {loading
+                    ? "Saving..."
+                    : editingId
+                    ? "Update Product"
+                    : "Create Product"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false);
+                    setForm(EMPTY_FORM);
+                    setEditingId(null);
+                  }}
+                  className="btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -168,7 +224,7 @@ export default function AdminProductsPage() {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
-              <th className="text-left px-6 py-4">Name</th>
+              <th className="text-left px-6 py-4">Product</th>
               <th className="text-left px-6 py-4">Category</th>
               <th className="text-left px-6 py-4">Price</th>
               <th className="text-left px-6 py-4">Stock</th>
@@ -181,35 +237,61 @@ export default function AdminProductsPage() {
                 key={product.id}
                 className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
               >
+                {/* Product name + image thumbnail */}
                 <td className="px-6 py-4">
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {product.name}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 line-clamp-1">
-                    {product.description}
-                  </p>
+                  <div className="flex items-center gap-3">
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-10 h-10 rounded-lg object-cover bg-gray-100 dark:bg-gray-800 flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                        <span className="text-gray-400 text-xs">No img</span>
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white text-sm">
+                        {product.name}
+                      </p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 line-clamp-1">
+                        {product.description}
+                      </p>
+                    </div>
+                  </div>
                 </td>
+
+                {/* Category */}
                 <td className="px-6 py-4">
                   <span className="badge bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
                     {product.category}
                   </span>
                 </td>
-                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+
+                {/* Price */}
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white text-sm">
                   ${product.price.toFixed(2)}
                 </td>
+
+                {/* Stock */}
                 <td className="px-6 py-4">
                   <span
-                    className={
+                    className={`text-sm font-medium ${
                       product.stock === 0
-                        ? "text-red-500 dark:text-red-400 font-medium text-sm"
-                        : "text-green-600 dark:text-green-400 font-medium text-sm"
-                    }
+                        ? "text-red-500 dark:text-red-400"
+                        : product.stock <= 5
+                        ? "text-yellow-600 dark:text-yellow-400"
+                        : "text-green-600 dark:text-green-400"
+                    }`}
                   >
                     {product.stock === 0
                       ? "Out of stock"
                       : `${product.stock} left`}
                   </span>
                 </td>
+
+                {/* Actions */}
                 <td className="px-6 py-4">
                   <div className="flex gap-3">
                     <button
@@ -231,6 +313,7 @@ export default function AdminProductsPage() {
           </tbody>
         </table>
 
+        {/* Empty state */}
         {products.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-400 dark:text-gray-500 text-sm">
