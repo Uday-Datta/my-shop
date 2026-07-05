@@ -23,6 +23,15 @@ export async function POST(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const data = await req.json();
-  const product = await prisma.product.create({ data });
+  const product = await prisma.product.create({
+    data: {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      image: data.image || null,
+      stock: data.stock,
+      categoryId: data.categoryId || null,
+    },
+  });
   return NextResponse.json(product, { status: 201 });
 }

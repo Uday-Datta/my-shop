@@ -4,35 +4,39 @@ import { prisma } from "@/lib/prisma";
 
 async function checkAdmin() {
   const session = await auth();
-  if (!session || session.user.role !== "ADMIN") return false;
-  return true;
+  return session?.user?.role === "ADMIN";
 }
 
 export async function PUT(req, { params }) {
   if (!(await checkAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   const { id } = await params;
   const data = await req.json();
-  const product = await prisma.product.update({
+
+  const category = await prisma.category.update({
     where: { id },
     data: {
       name: data.name,
-      description: data.description,
-      price: data.price,
-      image: data.image || null,
-      stock: data.stock,
-      categoryId: data.categoryId || null,
+      namebn: data.namebn || null,
+      slug: data.slug,
+      description: data.description || null,
+      icon: data.icon || null,
+      parentId: data.parentId || null,
     },
   });
-  return NextResponse.json(product);
+
+  return NextResponse.json(category);
 }
 
 export async function DELETE(req, { params }) {
   if (!(await checkAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   const { id } = await params;
-  await prisma.product.delete({ where: { id } });
+
+  await prisma.category.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }
