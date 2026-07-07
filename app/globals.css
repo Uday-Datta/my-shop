@@ -8,6 +8,21 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* ── Base styles ── */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@layer base {
+  /* Base styles for all elements */
+}
+
 /* ── Base typography ── */
 @layer base {
   *,

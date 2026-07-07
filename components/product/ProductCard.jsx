@@ -47,7 +47,9 @@ export default function ProductCard({ product, priority = false }) {
       {/* Content */}
       <div className="flex flex-col flex-1 p-4">
         {/* Category */}
-        <span className="label text-xs">{product.category}</span>
+        <span className="label text-xs">
+          {product.category?.name || product.category || "Uncategorized"}
+        </span>
 
         {/* Name */}
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 leading-snug line-clamp-2 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
