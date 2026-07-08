@@ -7,13 +7,14 @@ const EMPTY_FORM = {
   name: "",
   description: "",
   price: "",
-  category: "",
+  categoryId: "",
   stock: "",
   image: "",
 };
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -22,11 +23,18 @@ export default function AdminProductsPage() {
   const fetchProducts = async () => {
     const res = await fetch("/api/admin/products");
     const data = await res.json();
-    setProducts(data);
+    setProducts(Array.isArray(data) ? data : []);
+  };
+
+  const fetchCategories = async () => {
+    const res = await fetch("/api/admin/categories");
+    const data = await res.json();
+    setCategories(Array.isArray(data) ? data : []);
   };
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -37,6 +45,7 @@ export default function AdminProductsPage() {
       ...form,
       price: parseFloat(form.price),
       stock: parseInt(form.stock),
+      categoryId: form.categoryId || null,
     };
 
     if (editingId) {
@@ -65,7 +74,7 @@ export default function AdminProductsPage() {
       name: product.name,
       description: product.description,
       price: product.price,
-      category: product.category,
+      categoryId: product.categoryId || "",
       stock: product.stock,
       image: product.image || "",
     });
@@ -78,6 +87,8 @@ export default function AdminProductsPage() {
     await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
     fetchProducts();
   };
+
+  const parentCategories = categories.filter((c) => !c.parentId);
 
   return (
     <div>
@@ -122,23 +133,40 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Category */}
+              {/* Category dropdown */}
               <div>
                 <label className="label block mb-1.5">Category</label>
-                <input
-                  type="text"
-                  required
+                <select
                   className="w-full"
-                  value={form.category}
+                  value={form.categoryId}
                   onChange={(e) =>
-                    setForm({ ...form, category: e.target.value })
+                    setForm({ ...form, categoryId: e.target.value })
                   }
-                />
+                >
+                  <option value="">Select a category</option>
+                  {parentCategories.map((parent) => (
+                    <optgroup
+                      key={parent.id}
+                      label={`${parent.icon || ""} ${parent.name}`}
+                    >
+                      <option value={parent.id}>
+                        {parent.icon} {parent.name} (All)
+                      </option>
+                      {categories
+                        .filter((c) => c.parentId === parent.id)
+                        .map((sub) => (
+                          <option key={sub.id} value={sub.id}>
+                            {sub.icon} {sub.name}
+                          </option>
+                        ))}
+                    </optgroup>
+                  ))}
+                </select>
               </div>
 
               {/* Price */}
               <div>
-                <label className="label block mb-1.5">Price ($)</label>
+                <label className="label block mb-1.5">Price (৳)</label>
                 <input
                   type="number"
                   required
@@ -163,7 +191,7 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Description — full width */}
+              {/* Description */}
               <div className="col-span-2">
                 <label className="label block mb-1.5">Description</label>
                 <textarea
@@ -177,7 +205,7 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Image upload — full width */}
+              {/* Image upload */}
               <div className="col-span-2">
                 <label className="label block mb-1.5">Product Image</label>
                 <ImageUpload
@@ -186,7 +214,7 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Action buttons — full width */}
+              {/* Action buttons */}
               <div className="col-span-2 flex gap-3 pt-2">
                 <button
                   type="submit"
@@ -237,7 +265,7 @@ export default function AdminProductsPage() {
                 key={product.id}
                 className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
               >
-                {/* Product name + image thumbnail */}
+                {/* Product name + thumbnail */}
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     {product.image ? (
@@ -265,13 +293,14 @@ export default function AdminProductsPage() {
                 {/* Category */}
                 <td className="px-6 py-4">
                   <span className="badge bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-                    {product.category}
+                    {product.category?.icon}{" "}
+                    {product.category?.name || "Uncategorized"}
                   </span>
                 </td>
 
                 {/* Price */}
                 <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white text-sm">
-                  ${product.price.toFixed(2)}
+                  ৳{product.price.toFixed(2)}
                 </td>
 
                 {/* Stock */}
@@ -313,7 +342,6 @@ export default function AdminProductsPage() {
           </tbody>
         </table>
 
-        {/* Empty state */}
         {products.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-400 dark:text-gray-500 text-sm">

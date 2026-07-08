@@ -16,7 +16,7 @@ export async function GET(req) {
     });
 
     if (category) {
-      // Include products from this category AND all its subcategories
+      // Include products from this category AND all subcategories
       const categoryIds = [category.id, ...category.children.map((c) => c.id)];
       categoryFilter = { categoryId: { in: categoryIds } };
     }
@@ -39,11 +39,19 @@ export async function GET(req) {
     },
     include: {
       reviews: { select: { rating: true } },
-      category: { select: { name: true, namebn: true, slug: true } },
+      category: {
+        select: {
+          name: true,
+          namebn: true,
+          slug: true,
+          icon: true,
+        },
+      },
     },
     orderBy,
   });
 
+  // Add computed rating fields
   const productsWithRating = products.map((p) => ({
     ...p,
     averageRating: p.reviews.length
