@@ -91,3 +91,29 @@ enum OrderStatus {
   DELIVERED
   CANCELLED
 }
+
+model Banner {
+  id          String   @id @default(cuid())
+  title       String
+  titlebn     String?
+  subtitle    String?
+  subtitlebn  String?
+  cta         String?
+  ctabn       String?
+  href        String
+  image       String?
+  gradient    String?
+  emoji       String?
+  badge       String?
+  badgebn     String?
+  type        BannerType @default(HERO)
+  active      Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+enum BannerType {
+  HERO
+  PROMO
+}
+
