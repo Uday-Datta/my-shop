@@ -28,7 +28,6 @@ export default function AdminCategoriesPage() {
     fetchCategories();
   }, []);
 
-  // Auto-generate slug from name
   const handleNameChange = (value) => {
     const slug = value
       .toLowerCase()
@@ -41,10 +40,7 @@ export default function AdminCategoriesPage() {
     e.preventDefault();
     setLoading(true);
 
-    const payload = {
-      ...form,
-      parentId: form.parentId || null,
-    };
+    const payload = { ...form, parentId: form.parentId || null };
 
     if (editingId) {
       await fetch(`/api/admin/categories/${editingId}`, {
@@ -95,7 +91,6 @@ export default function AdminCategoriesPage() {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-gray-900 dark:text-white">Categories</h1>
@@ -115,7 +110,6 @@ export default function AdminCategoriesPage() {
         </button>
       </div>
 
-      {/* Form */}
       {showForm && (
         <div className="card p-6 mb-8">
           <h3 className="text-gray-900 dark:text-white mb-6">
@@ -228,11 +222,9 @@ export default function AdminCategoriesPage() {
         </div>
       )}
 
-      {/* Categories tree */}
       <div className="space-y-4">
         {parentCategories.map((cat) => (
           <div key={cat.id} className="card overflow-hidden">
-            {/* Parent row */}
             <div className="flex items-center justify-between px-6 py-4 bg-gray-50 dark:bg-gray-800/50">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{cat.icon}</span>
@@ -266,7 +258,6 @@ export default function AdminCategoriesPage() {
               </div>
             </div>
 
-            {/* Children */}
             {cat.children?.length > 0 && (
               <div className="divide-y divide-gray-100 dark:divide-gray-800">
                 {cat.children.map((sub) => (

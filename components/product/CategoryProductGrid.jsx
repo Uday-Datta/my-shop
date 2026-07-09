@@ -4,18 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import ProductCard from "./ProductCard";
 
 const SORT_OPTIONS = [
-  { value: "newest", label: "Newest First", labelbn: "নতুন আগে" },
-  {
-    value: "price-asc",
-    label: "Price: Low to High",
-    labelbn: "দাম: কম থেকে বেশি",
-  },
-  {
-    value: "price-desc",
-    label: "Price: High to Low",
-    labelbn: "দাম: বেশি থেকে কম",
-  },
-  { value: "rating", label: "Top Rated", labelbn: "সেরা রেটিং" },
+  { value: "newest", label: "Newest First" },
+  { value: "price-asc", label: "Price: Low to High" },
+  { value: "price-desc", label: "Price: High to Low" },
+  { value: "rating", label: "Top Rated" },
 ];
 
 export default function CategoryProductGrid({ categorySlug }) {
@@ -36,7 +28,6 @@ export default function CategoryProductGrid({ categorySlug }) {
     const res = await fetch(`/api/products?${params.toString()}`);
     let data = await res.json();
 
-    // Client-side price filter
     if (priceRange.min) {
       data = data.filter((p) => p.price >= parseFloat(priceRange.min));
     }
@@ -44,7 +35,6 @@ export default function CategoryProductGrid({ categorySlug }) {
       data = data.filter((p) => p.price <= parseFloat(priceRange.max));
     }
 
-    // Client-side rating sort
     if (sort === "rating") {
       data = data.sort((a, b) => b.averageRating - a.averageRating);
     }
@@ -71,7 +61,6 @@ export default function CategoryProductGrid({ categorySlug }) {
     <div>
       {/* Toolbar */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">
-        {/* Search */}
         <div className="relative flex-1 min-w-48">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +85,6 @@ export default function CategoryProductGrid({ categorySlug }) {
           />
         </div>
 
-        {/* Sort dropdown */}
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
@@ -109,7 +97,6 @@ export default function CategoryProductGrid({ categorySlug }) {
           ))}
         </select>
 
-        {/* Filter button */}
         <button
           onClick={() => setFilterOpen(!filterOpen)}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
@@ -138,7 +125,6 @@ export default function CategoryProductGrid({ categorySlug }) {
           )}
         </button>
 
-        {/* Clear filters */}
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
@@ -153,7 +139,7 @@ export default function CategoryProductGrid({ categorySlug }) {
       {filterOpen && (
         <div className="card p-5 mb-6">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">
-            Price Range · মূল্য সীমা
+            Price Range
           </h3>
           <div className="flex items-center gap-3">
             <div className="flex-1">
@@ -189,13 +175,12 @@ export default function CategoryProductGrid({ categorySlug }) {
             </button>
           </div>
 
-          {/* Quick price presets */}
           <div className="flex gap-2 flex-wrap mt-3">
             {[
               { label: "Under ৳500", min: "", max: "500" },
-              { label: "৳500–১০০০", min: "500", max: "1000" },
-              { label: "৳১০০০–৫০০০", min: "1000", max: "5000" },
-              { label: "Over ৳৫০০০", min: "5000", max: "" },
+              { label: "৳500–1000", min: "500", max: "1000" },
+              { label: "৳1000–5000", min: "1000", max: "5000" },
+              { label: "Over ৳5000", min: "5000", max: "" },
             ].map((preset) => (
               <button
                 key={preset.label}
@@ -215,7 +200,6 @@ export default function CategoryProductGrid({ categorySlug }) {
         </div>
       )}
 
-      {/* Results count */}
       {!loading && (
         <p className="text-sm text-gray-400 dark:text-gray-500 mb-4">
           {products.length} product{products.length !== 1 ? "s" : ""} found
@@ -223,7 +207,6 @@ export default function CategoryProductGrid({ categorySlug }) {
         </p>
       )}
 
-      {/* Product grid */}
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {[...Array(8)].map((_, i) => (

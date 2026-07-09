@@ -5,9 +5,7 @@ import CategoryProductGrid from "@/components/product/CategoryProductGrid";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const category = await prisma.category.findUnique({
-    where: { slug },
-  });
+  const category = await prisma.category.findUnique({ where: { slug } });
   if (!category) return { title: "Category Not Found" };
   return {
     title: `${category.name} — My Shop`,
@@ -28,10 +26,8 @@ export default async function CategoryPage({ params }) {
 
   if (!category) return notFound();
 
-  // If this is a subcategory, get siblings from parent
   const siblings = category.parent?.children || [];
 
-  // Get product count for this category and subcategories
   const categoryIds = [category.id, ...category.children.map((c) => c.id)];
 
   const productCount = await prisma.product.count({
@@ -41,7 +37,7 @@ export default async function CategoryPage({ params }) {
   return (
     <div className="page-container py-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+      <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6 overflow-x-auto whitespace-nowrap">
         <Link href="/" className="hover:text-gray-900 dark:hover:text-white">
           Home
         </Link>

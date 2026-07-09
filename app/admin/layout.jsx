@@ -3,7 +3,6 @@ import Link from "next/link";
 export default function AdminLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Sidebar */}
       <aside className="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col p-6 gap-1">
         <h2 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">
           Admin Panel
@@ -11,9 +10,9 @@ export default function AdminLayout({ children }) {
         {[
           { href: "/admin", label: "Dashboard" },
           { href: "/admin/products", label: "Products" },
-          { href: "/admin/orders", label: "Orders" },
-          { href: "/admin/banners", label: "Banners" },
           { href: "/admin/categories", label: "Categories" },
+          { href: "/admin/banners", label: "Banners" },
+          { href: "/admin/orders", label: "Orders" },
         ].map(({ href, label }) => (
           <Link
             key={href}
@@ -33,7 +32,6 @@ export default function AdminLayout({ children }) {
         </div>
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 p-8 overflow-auto">{children}</main>
     </div>
   );
