@@ -41,7 +41,7 @@ export default async function AdminDashboard() {
     },
     {
       label: "Total Revenue",
-      value: `$${(revenue._sum.total || 0).toFixed(2)}`,
+      value: `৳${(revenue._sum.total || 0).toFixed(2)}`,
       href: "#",
       color: "text-orange-600 dark:text-orange-400",
     },

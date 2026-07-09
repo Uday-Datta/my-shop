@@ -94,7 +94,7 @@ export default function CartPage() {
 
             <div className="flex-1">
               <h3 className="font-semibold">{item.name}</h3>
-              <p className="text-gray-500">${item.price.toFixed(2)}</p>
+              <p className="text-gray-500">৳{item.price.toFixed(2)}</p>
             </div>
 
             <input
@@ -108,7 +108,7 @@ export default function CartPage() {
             />
 
             <p className="w-20 text-right font-semibold">
-              ${(item.price * item.quantity).toFixed(2)}
+              ৳{(item.price * item.quantity).toFixed(2)}
             </p>
 
             <button
@@ -124,7 +124,7 @@ export default function CartPage() {
       {/* Total */}
       <div className="mt-8 flex justify-between items-center text-xl font-bold border-t pt-6">
         <span>Total</span>
-        <span>${total.toFixed(2)}</span>
+        <span>৳{total.toFixed(2)}</span>
       </div>
 
       {/* Payment method selection */}

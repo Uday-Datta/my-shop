@@ -64,7 +64,7 @@ export default function ProductCard({ product, priority = false }) {
         {/* Price row */}
         <div className="flex items-center justify-between mt-auto pt-4">
           <p className="text-lg font-bold text-gray-900 dark:text-white">
-            ${product.price.toFixed(2)}
+            ৳{product.price.toFixed(2)}
           </p>
 
           {/* Add to cart hint */}

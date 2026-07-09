@@ -30,7 +30,7 @@ export default async function ProductDetailPage({ params }) {
           <p className="text-sm text-gray-500 uppercase">{product.category}</p>
           <h1 className="text-3xl font-bold mt-2">{product.name}</h1>
           <p className="text-2xl font-semibold mt-4">
-            ${product.price.toFixed(2)}
+            ৳{product.price.toFixed(2)}
           </p>
           <p className="text-gray-600 mt-6">{product.description}</p>
           <p className="text-sm text-gray-500 mt-4">

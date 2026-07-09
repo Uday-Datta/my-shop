@@ -152,7 +152,7 @@ export default function OrdersPage() {
                   <div>
                     <p className="label">Total</p>
                     <p className="text-sm font-bold text-gray-900 dark:text-white mt-0.5">
-                      ${order.total.toFixed(2)}
+                      ৳{order.total.toFixed(2)}
                     </p>
                   </div>
                   <div>
@@ -270,12 +270,12 @@ export default function OrdersPage() {
                             {item.product?.category}
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Qty: {item.quantity} × ${item.price.toFixed(2)}
+                            Qty: {item.quantity} × ৳{item.price.toFixed(2)}
                           </p>
                         </div>
 
                         <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ৳{(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     ))}
@@ -289,7 +289,7 @@ export default function OrdersPage() {
                     <div className="text-right">
                       <p className="label">Order Total</p>
                       <p className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">
-                        ${order.total.toFixed(2)}
+                        ৳{order.total.toFixed(2)}
                       </p>
                     </div>
                   </div>
