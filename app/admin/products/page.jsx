@@ -84,7 +84,37 @@ export default function AdminProductsPage() {
 
   const handleDelete = async (id) => {
     if (!confirm("Delete this product?")) return;
-    await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+
+    const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (data.code === "HAS_ORDERS") {
+        const archive = confirm(
+          `${data.error}\n\nWould you like to set stock to 0 instead? This hides it from customers while keeping order history intact.`
+        );
+        if (archive) {
+          const product = products.find((p) => p.id === id);
+          await fetch(`/api/admin/products/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: product.name,
+              description: product.description,
+              price: product.price,
+              stock: 0,
+              categoryId: product.categoryId || null,
+              image: product.image,
+            }),
+          });
+          fetchProducts();
+        }
+      } else {
+        alert(data.error || "Failed to delete product");
+      }
+      return;
+    }
+
     fetchProducts();
   };
 

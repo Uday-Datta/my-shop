@@ -97,15 +97,27 @@ export default function CartPage() {
               <p className="text-gray-500">৳{item.price.toFixed(2)}</p>
             </div>
 
-            <input
-              type="number"
-              min="1"
-              value={item.quantity}
-              onChange={(e) =>
-                updateQuantity(item.id, parseInt(e.target.value) || 1)
-              }
-              className="w-16 border rounded px-2 py-1"
-            />
+            <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg">
+              <button
+                type="button"
+                onClick={() =>
+                  updateQuantity(item.id, Math.max(1, item.quantity - 1))
+                }
+                className="w-10 h-10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-l-lg"
+              >
+                −
+              </button>
+              <span className="w-10 text-center text-sm font-medium text-gray-900 dark:text-white">
+                {item.quantity}
+              </span>
+              <button
+                type="button"
+                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                className="w-10 h-10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-r-lg"
+              >
+                +
+              </button>
+            </div>
 
             <p className="w-20 text-right font-semibold">
               ৳{(item.price * item.quantity).toFixed(2)}
@@ -113,9 +125,23 @@ export default function CartPage() {
 
             <button
               onClick={() => removeFromCart(item.id)}
-              className="text-red-500 text-sm"
+              className="w-10 h-10 flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              aria-label="Remove item"
             >
-              Remove
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
             </button>
           </div>
         ))}
