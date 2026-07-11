@@ -4,6 +4,8 @@ import AddToCartButton from "@/components/product/AddToCartButton";
 import ReviewSection from "@/components/product/ReviewSection";
 import ProductImageGallery from "@/components/product/ProductImageGallery";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductDetailPage({ params }) {
   const { id } = await params;
 

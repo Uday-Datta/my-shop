@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import CategoryProductGrid from "@/components/product/CategoryProductGrid";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const category = await prisma.category.findUnique({ where: { slug } });

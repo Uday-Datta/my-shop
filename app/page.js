@@ -5,6 +5,8 @@ import PromoBanner from "@/components/home/PromoBanner";
 import TrustBadges from "@/components/home/TrustBadges";
 import ProductGrid from "@/components/product/ProductGrid";
 
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
   return (
     <div className="space-y-10 pb-10">
