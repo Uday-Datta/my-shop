@@ -5,6 +5,7 @@ import { CategoriesProvider } from "@/lib/CategoriesContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
+import { prisma } from "@/lib/prisma";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,10 +14,14 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata = {
-  title: "My Shop",
-  description: "A modern e-commerce store",
-};
+export async function generateMetadata() {
+  const settings = await prisma.siteSettings.findFirst();
+
+  return {
+    title: settings?.siteName || "My Shop",
+    description: settings?.tagline || "A modern e-commerce store",
+  };
+}
 
 export default function RootLayout({ children }) {
   return (
@@ -26,7 +31,7 @@ export default function RootLayout({ children }) {
           <CartProvider>
             <CategoriesProvider>
               <Navbar />
-              <main className="pb-20 md:pb-0">{children}</main>
+              <main className="pb-20 md:pb-0 min-h-screen">{children}</main>
               <Footer />
               <BottomNav />
             </CategoriesProvider>

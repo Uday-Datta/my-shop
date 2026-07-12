@@ -12,16 +12,18 @@ export async function PUT(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { logo } = await req.json();
+  const { siteName, tagline, logo, favicon } = await req.json();
 
   let settings = await prisma.siteSettings.findFirst();
 
   if (!settings) {
-    settings = await prisma.siteSettings.create({ data: { logo } });
+    settings = await prisma.siteSettings.create({
+      data: { siteName, tagline, logo, favicon },
+    });
   } else {
     settings = await prisma.siteSettings.update({
       where: { id: settings.id },
-      data: { logo },
+      data: { siteName, tagline, logo, favicon },
     });
   }
 
