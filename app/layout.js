@@ -3,6 +3,7 @@ import AuthProvider from "@/components/providers/SessionProvider";
 import { CartProvider } from "@/lib/CartContext";
 import { CategoriesProvider } from "@/lib/CategoriesContext";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import "./globals.css";
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
             <CategoriesProvider>
               <Navbar />
               <main className="pb-20 md:pb-0">{children}</main>
+              <Footer />
               <BottomNav />
             </CategoriesProvider>
           </CartProvider>

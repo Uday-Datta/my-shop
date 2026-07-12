@@ -7,14 +7,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  orders    Order[]
-  reviews   Review[]
+  id               String   @id @default(cuid())
+  name             String?
+  email            String   @unique
+  password         String
+  role             Role     @default(USER)
+  createdAt        DateTime @default(now())
+  orders           Order[]
+  reviews          Review[]
+  resetToken       String?
+  resetTokenExpiry DateTime?
 }
 
 model Category {
@@ -117,3 +119,8 @@ enum BannerType {
   PROMO
 }
 
+model SiteSettings {
+  id        String   @id @default(cuid())
+  logo      String?
+  updatedAt DateTime @updatedAt
+}

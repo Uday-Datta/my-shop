@@ -16,6 +16,15 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
 
+  const [logo, setLogo] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => setLogo(data.logo || ""))
+      .catch(() => {});
+  }, []);
+
   // Load saved theme
   useEffect(() => {
     const saved = localStorage.getItem("theme");
@@ -90,11 +99,18 @@ export default function Navbar() {
               </button>
 
               {/* Logo */}
-              <Link
-                href="/"
-                className="text-xl font-bold tracking-tight text-gray-900 dark:text-white flex-shrink-0"
-              >
-                My Shop
+              <Link href="/" className="flex items-center flex-shrink-0">
+                {logo ? (
+                  <img
+                    src={logo}
+                    alt="My Shop"
+                    className="h-8 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    My Shop
+                  </span>
+                )}
               </Link>
             </div>
 

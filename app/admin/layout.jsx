@@ -13,6 +13,7 @@ export default function AdminLayout({ children }) {
           { href: "/admin/categories", label: "Categories" },
           { href: "/admin/banners", label: "Banners" },
           { href: "/admin/orders", label: "Orders" },
+          { href: "/admin/settings", label: "Settings" },
         ].map(({ href, label }) => (
           <Link
             key={href}
