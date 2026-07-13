@@ -10,7 +10,7 @@ export async function generateMetadata({ params }) {
   const category = await prisma.category.findUnique({ where: { slug } });
   if (!category) return { title: "Category Not Found" };
   return {
-    title: `${category.name} — My Shop`,
+    title: category.name,
     description: category.description,
   };
 }

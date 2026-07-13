@@ -16,9 +16,13 @@ const inter = Inter({
 
 export async function generateMetadata() {
   const settings = await prisma.siteSettings.findFirst();
+  const siteName = settings?.siteName || "My Shop";
 
   return {
-    title: settings?.siteName || "My Shop",
+    title: {
+      default: siteName,
+      template: `%s — ${siteName}`,
+    },
     description: settings?.tagline || "A modern e-commerce store",
   };
 }
