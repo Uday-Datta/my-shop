@@ -47,11 +47,18 @@ export async function POST(req) {
   }
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    });
+
     const order = await prisma.order.create({
       data: {
         userId: session.user.id,
         total,
         status: "PENDING",
+        shippingAddress: user?.address || null,
+        shippingCity: user?.city || null,
+        shippingPhone: user?.phone || null,
         items: {
           create: items.map((item) => ({
             productId: item.id,

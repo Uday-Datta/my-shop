@@ -212,6 +212,12 @@ export default function Navbar() {
               {/* Account — desktop only */}
               {session ? (
                 <div className="hidden md:flex items-center gap-2">
+                  <Link
+                    href="/account"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-1.5"
+                  >
+                    My Account
+                  </Link>
                   {session.user.role === "ADMIN" && (
                     <Link
                       href="/admin"

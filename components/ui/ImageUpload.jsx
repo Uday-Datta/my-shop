@@ -3,7 +3,11 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 
-export default function ImageUpload({ value, onChange }) {
+export default function ImageUpload({
+  value,
+  onChange,
+  endpoint = "/api/admin/upload",
+}) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
@@ -31,7 +35,7 @@ export default function ImageUpload({ value, onChange }) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/admin/upload", {
+      const res = await fetch(endpoint, {
         method: "POST",
         body: formData,
       });

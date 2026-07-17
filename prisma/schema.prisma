@@ -7,12 +7,16 @@ datasource db {
 }
 
 model User {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   name             String?
-  email            String   @unique
+  email            String    @unique
   password         String
-  role             Role     @default(USER)
-  createdAt        DateTime @default(now())
+  role             Role      @default(USER)
+  avatar           String?
+  phone            String?
+  address          String?
+  city             String?
+  createdAt        DateTime  @default(now())
   orders           Order[]
   reviews          Review[]
   resetToken       String?
@@ -49,13 +53,16 @@ model Product {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  total     Float
-  status    OrderStatus @default(PENDING)
-  createdAt DateTime    @default(now())
-  items     OrderItem[]
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  total           Float
+  status          OrderStatus @default(PENDING)
+  shippingAddress String?
+  shippingCity    String?
+  shippingPhone   String?
+  createdAt       DateTime    @default(now())
+  items           OrderItem[]
 }
 
 model OrderItem {

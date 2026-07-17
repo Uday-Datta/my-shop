@@ -6,6 +6,7 @@ import { useCart } from "@/lib/CartContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { useEffect } from "react";
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, total, clearCart } = useCart();
@@ -14,6 +15,15 @@ export default function CartPage() {
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [hasAddress, setHasAddress] = useState(true);
+
+  useEffect(() => {
+    if (session) {
+      fetch("/api/account/profile")
+        .then((res) => res.json())
+        .then((data) => setHasAddress(!!data.address));
+    }
+  }, [session]);
 
   const handleCheckout = async () => {
     if (!session) {
@@ -192,6 +202,18 @@ export default function CartPage() {
       </div>
 
       {error && <p className="text-red-500 mt-4">{error}</p>}
+
+      {session && !hasAddress && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-400 text-sm px-4 py-3 rounded-lg mt-4 flex items-center justify-between gap-3">
+          <span>Add a shipping address for faster delivery</span>
+          <Link
+            href="/account"
+            className="underline font-medium whitespace-nowrap"
+          >
+            Add now
+          </Link>
+        </div>
+      )}
 
       {/* Checkout button */}
       <button

@@ -185,6 +185,19 @@ export default function OrdersPage() {
               {/* Expandable order items */}
               {isExpanded && (
                 <div className="border-t border-gray-100 dark:border-gray-800">
+                  {/* Shipping details */}
+                  {order.shippingAddress && (
+                    <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
+                      <p className="label mb-1">Shipping To</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        {order.shippingAddress}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {order.shippingCity}{" "}
+                        {order.shippingPhone && `· ${order.shippingPhone}`}
+                      </p>
+                    </div>
+                  )}
                   {/* Progress tracker */}
                   {order.status !== "CANCELLED" && (
                     <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
