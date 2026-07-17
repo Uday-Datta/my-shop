@@ -4,10 +4,24 @@ import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "@/components/ui/ImageUpload";
+import Link from "next/link";
+
+const STATUS_COLORS = {
+  PENDING:
+    "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
+  PAID: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+  SHIPPED:
+    "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+  DELIVERED:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  CANCELLED: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+};
 
 export default function AccountPage() {
   const { status } = useSession();
   const router = useRouter();
+
+  const [recentOrders, setRecentOrders] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({
@@ -60,6 +74,34 @@ export default function AccountPage() {
           });
           setLoading(false);
         });
+    }
+
+    if (status === "authenticated") {
+      fetch("/api/account/profile")
+        .then((res) => res.json())
+        .then((data) => {
+          setProfile({
+            name: data.name || "",
+            email: data.email || "",
+            avatar: data.avatar || "",
+            phone: data.phone || "",
+            address: data.address || "",
+            city: data.city || "",
+          });
+          setStats({
+            orderCount: data.orderCount || 0,
+            totalSpent: data.totalSpent || 0,
+            createdAt: data.createdAt,
+          });
+          setLoading(false);
+        });
+
+      fetch("/api/orders")
+        .then((res) => res.json())
+        .then((data) =>
+          setRecentOrders(Array.isArray(data) ? data.slice(0, 3) : [])
+        )
+        .catch(() => setRecentOrders([]));
     }
   }, [status, router]);
 
@@ -180,6 +222,52 @@ export default function AccountPage() {
             Member Since
           </p>
         </div>
+      </div>
+
+      {/* Recent Orders */}
+      <div className="card p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-gray-900 dark:text-white">Recent Orders</h3>
+          <Link
+            href="/orders"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          >
+            View all →
+          </Link>
+        </div>
+
+        {recentOrders.length === 0 ? (
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-6">
+            No orders yet
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {recentOrders.map((order) => (
+              <Link
+                key={order.id}
+                href="/orders"
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+              >
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    Order #{order.id.slice(-8).toUpperCase()}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                    {new Date(order.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                    {" · "}৳{order.total.toFixed(2)}
+                  </p>
+                </div>
+                <span className={`badge ${STATUS_COLORS[order.status]}`}>
+                  {order.status}
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Profile section */}
